@@ -3,6 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
+import path from "path";
+import { fileURLToPath } from "url";  
+ 
 
 import authRoutes from "./routes/authRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
@@ -24,26 +27,30 @@ const app = express();
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(cors());
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
 }));
 app.use(morgan("dev"));
 
-//API Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/books", bookRoutes);
-app.use("/api/reviews", reviewRoutes);
+
+// Serve uploaded files
 app.use("/uploads", express.static("uploads"));
 app.use("/uploads/covers", express.static("uploads/covers"));
 app.use("/uploads/books", express.static("uploads/books"));
 
 
+//API Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 // Test route
 // app.get("/", (req, res) => {
 //   res.send("📚 E-Book API is running...");
 // });
+
+// Get all books
 app.get("/", async (req, res) => {
   try {
     const books = await Book.find();
@@ -58,6 +65,15 @@ app.get("/", async (req, res) => {
       message: "Server Error",
     });
   }
+});
+
+// Serve React frontend
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
 
 // Error handling middleware (must come *after* routes)
