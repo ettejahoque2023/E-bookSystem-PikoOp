@@ -70,11 +70,20 @@ app.get("/", async (req, res) => {
 // Serve React frontend
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get(/^\/(?!api).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist", "index.html"));
-});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+  // Any route not starting with /api serves index.html
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.send("📚 E-Book API is running...");
+  });
+}
 
 // Error handling middleware (must come *after* routes)
 app.use(notFound);
