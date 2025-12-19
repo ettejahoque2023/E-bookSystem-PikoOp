@@ -6,10 +6,11 @@ export default function BookCard({ book }) {
     <Link to={`/books/${book._id}`}>
       <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1 cursor-pointer">
         <img
-          src={`http://localhost:5000/${book.coverImage}`}
+          src={book.coverImage}
           alt={book.title}
           className="w-full h-48 object-cover"
         />
+
         <div className="p-3">
           <h3 className="font-semibold text-sm md:text-base">{book.title}</h3>
           <p className="text-xs text-gray-500">{book.author}</p>

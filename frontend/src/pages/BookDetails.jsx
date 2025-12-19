@@ -31,10 +31,11 @@ export default function BookDetails() {
     <div className="book-details-container">
       <div className="book-details">
         <img
-          src={`http://localhost:5000/${book.coverImage}`}
+          src={book.coverImage}
           alt={book.title}
           className="book-details-cover"
         />
+
 
         <div className="book-info">
           <h1>{book.title}</h1>
@@ -45,15 +46,22 @@ export default function BookDetails() {
             {book.description || "No description available."}
           </p>
 
-          {book.bookFile && (
-            <a
-               href={`http://localhost:5000/${book.bookFile}`}
-              download
-              className="btn download-btn"
-            >
-              Download Book
-            </a>
-          )}
+          {book.bookFile && (() => {
+  // const downloadUrl = book.bookFile.replace(
+  //   "/raw/upload/",
+  //   "/raw/upload/fl_attachment/"
+  // );
+
+  return (
+    <a
+      href={`/api/books/${id}/download`}
+      className="btn download-btn"
+    >
+      Download Book
+    </a>
+  );
+})()}
+
         </div>
       </div>
 

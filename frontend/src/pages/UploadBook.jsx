@@ -52,7 +52,7 @@ export default function UploadBook() {
       fd.append("coverImage", coverImage);
       fd.append("bookFile", bookFile);
 
-      const res = await axios.post("/api/books/upload", fd, {
+      const res = await axios.post("/api/books", fd, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: "Bearer " + JSON.parse(localStorage.getItem("user"))?.token,

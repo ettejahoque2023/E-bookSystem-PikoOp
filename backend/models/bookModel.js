@@ -18,7 +18,7 @@ const bookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-  
+  //cloudinary urls
     coverImage: {
       type: String, // Path or URL
       required: true,
@@ -27,9 +27,24 @@ const bookSchema = new mongoose.Schema(
       type: String, // PDF file path or URL
       required: true,
     },
-    uploader: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true 
-      
+
+    // Cloudinary public_ids (NEW)
+    coverImageId: {
+      type: String,
+     default:"",
     },
+    bookFileId: {
+      type: String,
+      default:"",
+    },
+
+    //user 
+    uploader: { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "User", 
+      required: true 
+    },
+
     averageRating: {
       type: Number,
       default: 0,

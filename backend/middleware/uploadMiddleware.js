@@ -1,42 +1,43 @@
+// import multer from "multer";
+// import { CloudinaryStorage } from "multer-storage-cloudinary";
+// import cloudinary from "../config/cloudinary.js";
+
+// // Dynamic Cloudinary storage
+// const storage = new CloudinaryStorage({
+//   cloudinary,
+//   params: (req, file) => {
+//     let folder = "ebooks/others";
+
+//     if (file.fieldname === "coverImage") folder = "ebooks/covers";
+//     else if (file.fieldname === "bookFile") folder = "ebooks/books";
+
+//     return {
+//       folder,
+//       resource_type: file.mimetype === "application/pdf" ? "raw" : "image",
+//       public_id: `${file.fieldname}-${Date.now()}`,
+//     };
+//   },
+// });
+
+// // File filter (same logic as yours)
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype.startsWith("image/") ||
+//     file.mimetype === "application/pdf"
+//   ) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Only images and PDFs allowed"), false);
+//   }
+// };
+
+// export const upload = multer({ storage, fileFilter });
+
+
+
 import multer from "multer";
-import path from "path";
-import fs from "fs";
 
-// Ensure upload subdirectories exist
-const createUploadDirs = () => {
-  const baseDir = path.join(process.cwd(), "uploads");
-  const subDirs = ["covers", "books","others"];
+const storage = multer.memoryStorage();
 
-  if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir);
-  subDirs.forEach((dir) => {
-    const fullPath = path.join(baseDir, dir);
-    if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath);
-  });
-};
+export const upload = multer({ storage });
 
-createUploadDirs();
-
-// Dynamic storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    let folder = "uploads/others"; // default fallback
-    if (file.fieldname === "coverImage") folder = "uploads/covers";
-    else if (file.fieldname === "bookFile") folder = "uploads/books";
-    cb(null, folder);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname));
-  },
-});
-
-// File filter (optional)
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/") || file.mimetype === "application/pdf") {
-    cb(null, true);
-  } else {
-    cb(new Error("Only images and PDFs allowed"), false);
-  }
-};
-
-export const upload = multer({ storage, fileFilter });
